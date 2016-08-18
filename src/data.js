@@ -1,4 +1,4 @@
-{
+var myData = {
   javascript: {
     thiskeyword: {
       thiskeyword1: {
@@ -62,8 +62,8 @@
   },
   user1: {
     facebookId: 100,
-    name: "Charles Sipe",
-    articles : {
+    name: 'Charles Sipe',
+    articles: {
       article1: true,
       article2: false,
       article3: true,
@@ -77,5 +77,4 @@
       total: 2
     }
   }
-}
-
+};

@@ -1,8 +1,8 @@
-{
+var user = {
   user1: {
     facebookId: 100,
-    name: "Joe King",
-    articles : {
+    name: 'Joe King',
+    articles: {
       article1: true,
       article2: false,
       article3: true,
@@ -16,4 +16,6 @@
       total: 2
     }
   }
-});
+};
+
+var userName = user.user1.name;

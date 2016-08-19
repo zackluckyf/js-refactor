@@ -5,6 +5,9 @@ describe('Refactor', function () {
     // affix('.learn-query-testing #toddler .hidden.toy+h1[class="title"]+span[class="subtitle"]+span[class="subtitle"]+input[name="toyName"][value="cuddle bunny"]+input[class="creature"][value="unicorn"]+.hidden+.infinum[value="awesome cool"]')
     affix('.total-progress');
     affix('.prototype-progress');
+    affix('.thiskeyword-progress');
+    affix('.prototype li:nth-child(1) input');
+    affix('.prototype input');
   });
 
   describe('calcTotalPercent function', function () {
@@ -39,11 +42,12 @@ describe('Refactor', function () {
     it('should set completed prototype when getCompletedPrototype is called ', function () {
       setCompleteValue('prototype', 3);
       setSectionProgress('prototype', 3);
-      expect($('<div class="prototype-progress" style="width: 100%;"></div>')).toHaveCss({width: '100%'});
-      console.log($('div.prototype-progress')[0])
-      / expect($('div.prototype-progress')[0]).toHaveCss({width: '10%'});
-    // expect(($('.prototype-progress')[0]).css('width')).toEqual('')
-    // expect($('.total-progress')).not.toHaveCss('{width:100px}')
+      expect($('div.prototype-progress')[0].style.width).toEqual('100%');
+    });
+    it('should set completed prototype when getCompletedThisKeyword is called ', function () {
+      setCompleteValue('thiskeyword', 2);
+      setSectionProgress('thiskeyword', 4);
+      expect($('div.thiskeyword-progress')[0].style.width).toEqual('50%');
     });
     it('should show completed completed function when getCompletedFunctions is called ', function () {
       setCompleteValue('functions', 3);
@@ -61,9 +65,20 @@ describe('Refactor', function () {
       expect(completed).toEqual(3);
     });
   });
-  xdescribe('myData ', function () {
-    it('should be called ', function () {
-      expect(myData).toEqual([]);
+  describe('Change events', function () {
+    it('should be changed', function () {
+      var before = completedPrototype;
+      $('.prototype input').trigger('change');
+      expect(completedPrototype).toEqual(before);
+    });
+  });
+  describe('Update Firebase', function () {
+    it('should call myFirebase function', function () {
+      spyOn(myFirebaseRef, 'child').and.callThrough();
+      var child = myFirebaseRef.child;
+      updateFirebase('prototype', 'prototype1');
+      expect(myFirebaseRef.child).toHaveBeenCalledWith('/javascript/prototype/prototype1');
+      expect(myFirebaseRef.child).toHaveBeenCalledWith('/javascript/prototype/');
     });
   });
   xdescribe('description', function () {

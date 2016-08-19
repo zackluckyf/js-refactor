@@ -1,9 +1,20 @@
 var totalPrototype = 2;
-var completePercent = 0;
 var totalThisKeyword = 3;
 var totalFunctions = 2;
 var totalClosures = 2;
 var totalScope = 2;
+var completePercent = 0;
+var completedScope;
+var completedPrototype;
+var completedThisKeyword;
+var completedFunctions;
+var completedClosures;
+var myFirebaseRef = myFirebaseRef || {};
+myFirebaseRef.child = function () {
+  return {
+    update: function () {}
+  };
+};
 
 function calcTotalPercent () {
   // var completedPrototype = myData.javascript.prototype.completed
@@ -13,16 +24,32 @@ function calcTotalPercent () {
   completePercent = completePercent.toFixed(1);
   $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
 }
+
 function setProgressBar (indicator, percent) {
   $('.' + indicator + '-progress').css('width', percent + '%').text(percent + '%');
 }
+
 function setSectionProgress (section, items) {
   completed = myData.javascript[section].completed;
-  $('.' + section + '-progress').css('width', ((completed / items) * 100) + '%');
+  var percentage = ((completed / items) * 100);
+  setProgressBar(section, percentage);
   calcTotalPercent();
   return completed;
 }
+function updateFirebase (section, id) {
+  myFirebaseRef.child('/javascript/' + section + '/' + id).update({ 'completed': this.checked });
+  myFirebaseRef.child('/javascript/' + section + '/').update({ 'completed': completedPrototype });
+}
+function triggerChange (section, id, counter) {
+  if (this.checked) {
+    counter++;
+  }else {
+    counter--;
+  }
+  updateFirebase(section, id);
 
+  setSectionProgress(section);
+}
 $(document).ready(function () {
 
   // get completedPrototype from Firebase object
@@ -35,97 +62,26 @@ $(document).ready(function () {
   setTimeout(function () { displayLogic(); }, 0);
 
   $('.prototype li:nth-child(1) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/prototype/prototype1').update({ 'completed': true });
-      completedPrototype++;
-      myFirebaseRef.child('/javascript/prototype/').update({ 'completed': completedPrototype });
-      $('.prototype-progress').css('width', (completedPrototype / totalPrototype * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/prototype/prototype1').update({ 'completed': false });
-      completedPrototype--;
-      myFirebaseRef.child('/javascript/prototype/').update({ 'completed': completedPrototype });
-      $('.prototype-progress').css('width', (completedPrototype / totalPrototype * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('prototype', 'prototype1', completedPrototype);
   });
 
   $('.prototype li:nth-child(2) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/prototype/prototype2').update({ 'completed': true });
-      completedPrototype++;
-      myFirebaseRef.child('/javascript/prototype/').update({ 'completed': completedPrototype });
-      $('.prototype-progress').css('width', (completedPrototype / totalPrototype * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/prototype/prototype2').update({ 'completed': false });
-      completedPrototype--;
-      myFirebaseRef.child('/javascript/prototype/').update({ 'completed': completedPrototype });
-      $('.prototype-progress').css('width', (completedPrototype / totalPrototype * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('prototype', 'prototype2', completedPrototype);
   });
 
   // this keyword
 
   // get completedThisKeyword from Firebase object
-
   $('.thiskeyword li:nth-child(1) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/thiskeyword/thiskeyword1').update({ 'completed': true });
-      completedThisKeyword++;
-      myFirebaseRef.child('/javascript/thiskeyword/').update({ 'completed': completedThisKeyword });
-      $('.thiskeyword-progress').css('width', (completedThisKeyword / totalThisKeyword * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/thiskeyword/thiskeyword1').update({ 'completed': false });
-      completedThisKeyword--;
-      myFirebaseRef.child('/javascript/thiskeyword/').update({ 'completed': completedThisKeyword });
-      $('.thiskeyword-progress').css('width', (completedThisKeyword / totalThisKeyword * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('thiskeyword', 'thiskeyword1', completedThisKeyword);
   });
 
   $('.thiskeyword li:nth-child(2) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/thiskeyword/thiskeyword2').update({ 'completed': true });
-      completedThisKeyword++;
-      myFirebaseRef.child('/javascript/thiskeyword/').update({ 'completed': completedThisKeyword });
-      $('.thiskeyword-progress').css('width', (completedThisKeyword / totalThisKeyword * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/thiskeyword/thiskeyword2').update({ 'completed': false });
-      completedThisKeyword--;
-      myFirebaseRef.child('/javascript/thiskeyword/').update({ 'completed': completedThisKeyword });
-      $('.thiskeyword-progress').css('width', (completedThisKeyword / totalThisKeyword * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('thiskeyword', 'thiskeyword2', completedThisKeyword);
   });
 
   $('.thiskeyword li:nth-child(3) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/thiskeyword/thiskeyword3').update({ 'completed': true });
-      completedThisKeyword++;
-      myFirebaseRef.child('/javascript/thiskeyword/').update({ 'completed': completedThisKeyword });
-      $('.thiskeyword-progress').css('width', (completedThisKeyword / totalThisKeyword * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/thiskeyword/thiskeyword3').update({ 'completed': false });
-      completedThisKeyword--;
-      myFirebaseRef.child('/javascript/thiskeyword/').update({ 'completed': completedThisKeyword });
-      $('.thiskeyword-progress').css('width', (completedThisKeyword / totalThisKeyword * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('thiskeyword', 'thiskeyword3', completedThisKeyword);
   });
 
   // Functions
@@ -133,127 +89,31 @@ $(document).ready(function () {
   // get completedFunctions from Firebase object
 
   $('.functions li:nth-child(1) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/functions/functions1').update({ 'completed': true });
-      completedFunctions++;
-      myFirebaseRef.child('/javascript/functions/').update({ 'completed': completedFunctions });
-      console.log(myData.javascript.functions.completed);
-      console.log(completedFunctions / totalFunctions * 100);
-      $('.functions-progress').css('width', (completedFunctions / totalFunctions * 100) + '%');
-      calcTotalPercent();
-      console.log(completePercent);
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/functions/functions1').update({ 'completed': false });
-      completedFunctions--;
-      myFirebaseRef.child('/javascript/functions/').update({ 'completed': completedFunctions });
-      console.log(myData.javascript.functions.completed);
-      console.log(completedFunctions / totalFunctions * 100);
-      $('.functions-progress').css('width', (completedFunctions / totalFunctions * 100) + '%');
-      calcTotalPercent();
-      console.log(completePercent);
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('functions', 'functions1', completedFunctions);
   });
 
   $('.functions li:nth-child(2) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/functions/functions2').update({ 'completed': true });
-      completedFunctions++;
-      myFirebaseRef.child('/javascript/functions/').update({ 'completed': completedFunctions });
-      console.log(myData.javascript.functions.completed);
-      console.log(completedFunctions / totalFunctions * 100);
-      $('.functions-progress').css('width', (completedFunctions / totalFunctions * 100) + '%');
-      calcTotalPercent();
-      console.log(completePercent);
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/functions/functions2').update({ 'completed': false });
-      completedFunctions--;
-      myFirebaseRef.child('/javascript/functions/').update({ 'completed': completedFunctions });
-      console.log(myData.javascript.functions.completed);
-      console.log(completedFunctions / totalFunctions * 100);
-      $('.functions-progress').css('width', (completedFunctions / totalFunctions * 100) + '%');
-      calcTotalPercent();
-      console.log(completePercent);
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('functions', 'functions2', completedFunctions);
   });
 
   // closures
 
   $('.closures li:nth-child(1) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/closures/closures1').update({ 'completed': true });
-      completedClosures++;
-      myFirebaseRef.child('/javascript/closures/').update({ 'completed': completedClosures });
-      $('.closures-progress').css('width', (completedClosures / totalClosures * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/closures/closures1').update({ 'completed': false });
-      completedClosures--;
-      myFirebaseRef.child('/javascript/closures/').update({ 'completed': completedClosures });
-      $('.closures-progress').css('width', (completedClosures / totalClosures * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('closures', 'closures1', completedClosures);
   });
 
   $('.closures li:nth-child(2) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/closures/closures2').update({ 'completed': true });
-      completedClosures++;
-      myFirebaseRef.child('/javascript/closures/').update({ 'completed': completedClosures });
-      $('.closures-progress').css('width', (completedClosures / totalClosures * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/closures/closures2').update({ 'completed': false });
-      completedClosures--;
-      myFirebaseRef.child('/javascript/closures/').update({ 'completed': completedClosures });
-      $('.closures-progress').css('width', (completedClosures / totalClosures * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('closures', 'closures2', completedClosures);
   });
 
   // scope
 
   $('.scope li:nth-child(1) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/scope/scope1').update({ 'completed': true });
-      completedScope++;
-      myFirebaseRef.child('/javascript/scope/').update({ 'completed': completedScope });
-      $('.scope-progress').css('width', (completedScope / totalScope * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/scope/scope1').update({ 'completed': false });
-      completedScope--;
-      myFirebaseRef.child('/javascript/scope/').update({ 'completed': completedScope });
-      $('.scope-progress').css('width', (completedScope / totalScope * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('scope', 'scope1', completedScope);
   });
 
   $('.scope li:nth-child(2) input').change(function () {
-    if (this.checked) {
-      myFirebaseRef.child('/javascript/scope/scope2').update({ 'completed': true });
-      completedScope++;
-      myFirebaseRef.child('/javascript/scope/').update({ 'completed': completedScope });
-      $('.scope-progress').css('width', (completedScope / totalScope * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }else {
-      myFirebaseRef.child('/javascript/scope/scope2').update({ 'completed': false });
-      completedScope--;
-      myFirebaseRef.child('/javascript/scope/').update({ 'completed': completedScope });
-      $('.scope-progress').css('width', (completedScope / totalScope * 100) + '%');
-      calcTotalPercent();
-      $('.total-progress').css('width', completePercent + '%').text(completePercent + '%');
-    }
+    triggerChange('scope', 'scope2', completedScope);
   });
 
   // console.log(myData.javascript.articles.article1.title)
@@ -266,11 +126,11 @@ $(document).ready(function () {
 
     $('.prototype li:nth-child(2)').append(myData.javascript.prototype.prototype2.title);
 
-    if (myData.javascript.prototype.prototype1.completed == true) { // Display check marks if item is completed
+    if (myData.javascript.prototype.prototype1.completed === true) { // Display check marks if item is completed
       $('.prototype li:nth-child(1) input').attr('checked', 'checked');
     }
 
-    if (myData.javascript.prototype.prototype2.completed == true) {
+    if (myData.javascript.prototype.prototype2.completed === true) {
       $('.prototype li:nth-child(2) input').attr('checked', 'checked');
     }
 
